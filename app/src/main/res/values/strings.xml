@@ -1,3 +1,4 @@
 <resources>
   <string name="app_name">Cuco</string>
+  <string name="connection_loose">Not connected</string>
 </resources>
