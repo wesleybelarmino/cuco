@@ -17,20 +17,17 @@ public class StepsViewHolder extends RecyclerView.ViewHolder {
 
     public StepsViewHolder(View itemView) {
         super(itemView);
-    }
-
-    public StepsViewHolder(View itemView, final PublishSubject<Integer> clickSubject) {
-        super(itemView);
         this.view = itemView;
         ButterKnife.bind(this, view);
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
-                clickSubject.onNext(getAdapterPosition());
-            }
-        });
     }
 
-    public void bind(Steps steps) {
+    public void bind(final Steps steps, final OnItemClickListener listener, final int position) {
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View view) {
+                listener.onItemClick(position);
+            }
+        });
+
         description.setText(steps.getDescription());
     }
 }

@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.app.cuco.R;
 import com.app.cuco.recipedetail.preparation.ingredients.pojo.Ingredients;
+import com.app.cuco.recipedetail.preparation.steps.pojo.Steps;
 import java.util.ArrayList;
 import java.util.List;
 

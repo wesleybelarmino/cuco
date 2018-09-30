@@ -1,5 +1,6 @@
 package com.app.cuco.recipe;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,9 +18,11 @@ import com.app.cuco.recipe.core.RecipeContract;
 import com.app.cuco.recipe.di.DaggerRecipeComponent;
 import com.app.cuco.recipe.di.RecipeModule;
 import com.app.cuco.recipe.list.RecipeAdapter;
+import com.app.cuco.recipedetail.RecipeDetailActivity;
 import com.app.cuco.util.Constants;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import io.reactivex.Observable;
+import java.io.Serializable;
 import java.util.List;
 import javax.inject.Inject;
 
@@ -98,7 +101,10 @@ public class RecipeActivity extends BaseActivity implements RecipeContract.View 
     }
 
     @Override public void goToRecipeDetailsActivity(Recipe recipe, int position) {
-
+        Log.d("main","goToRecipeDetailsActivity: "+recipe);
+        Intent in = new Intent(this, RecipeDetailActivity.class);
+        in.putExtra(Constants.RECIPE_SAVED_INSTANCE, (Serializable) recipe);
+        startActivity(in);
     }
 
     @Override public void hasConnection() {

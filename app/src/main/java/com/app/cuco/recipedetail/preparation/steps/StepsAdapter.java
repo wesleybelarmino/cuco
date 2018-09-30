@@ -15,10 +15,12 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsViewHolder> {
 
     private final PublishSubject<Integer> itemClicks = PublishSubject.create();
     private ArrayList<Steps> stepsList = new ArrayList<>();
+    private OnItemClickListener listener;
 
-    public void addStepList(List<Steps> steps) {
+    public void addStepList(List<Steps> steps, OnItemClickListener listener) {
         stepsList.clear();
         stepsList.addAll(steps);
+        this.listener = listener;
     }
 
     public Observable<Integer> observeClicks() {
@@ -28,12 +30,12 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsViewHolder> {
     @Override public StepsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
             .inflate(R.layout.steps_list_item, parent, false);
-        return new StepsViewHolder(view, itemClicks);
+        return new StepsViewHolder(view);
     }
 
     @Override public void onBindViewHolder(StepsViewHolder holder, int position) {
         Steps steps = stepsList.get(position);
-        holder.bind(steps);
+        holder.bind(steps, listener, position);
     }
 
     @Override public int getItemCount() {

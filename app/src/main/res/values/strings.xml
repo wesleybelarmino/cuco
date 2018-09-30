@@ -1,4 +1,7 @@
 <resources>
   <string name="app_name">Cuco</string>
   <string name="connection_loose">Not connected</string>
+
+  <string name="preparation_ingredients">Ingredients</string>
+  <string name="preparation_steps">Steps</string>
 </resources>
