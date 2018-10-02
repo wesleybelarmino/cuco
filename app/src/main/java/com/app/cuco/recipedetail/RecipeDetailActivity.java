@@ -70,6 +70,7 @@ public class RecipeDetailActivity extends BaseActivity
 
     @Override public void onBackPressed() {
         if (frameLayout.getVisibility() == View.VISIBLE && !isTabletSize()) {
+            videoFragment.releasePlayer();
             frameLayout.setVisibility(View.GONE);
         } else {
             super.onBackPressed();
