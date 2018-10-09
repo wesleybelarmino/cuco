@@ -1,7 +1,11 @@
 package com.app.cuco.recipedetail.preparation;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Context;
+import android.content.res.Configuration;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,10 +13,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import com.app.cuco.CucoApp;
 import com.app.cuco.R;
+import com.app.cuco.recipedetail.RecipeDetailActivity;
 import com.app.cuco.recipedetail.preparation.steps.pojo.Steps;
+import com.app.cuco.util.Utils;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlayerFactory;
@@ -72,7 +82,7 @@ public class PreparationVideoFragment extends Fragment {
 
     private void initializePlayer() {
         player = ExoPlayerFactory.newSimpleInstance(
-            new DefaultRenderersFactory(getContext()),
+            new DefaultRenderersFactory(CucoApp.getContext()),
             new DefaultTrackSelector(), new DefaultLoadControl());
 
         playerView.setPlayer(player);
@@ -80,7 +90,9 @@ public class PreparationVideoFragment extends Fragment {
         player.setPlayWhenReady(playWhenReady);
         player.seekTo(currentWindow, playbackPosition);
 
-        Uri uri = Uri.parse(stepsList.get(currentStep).getVideoURL());
+        String url = (!stepsList.get(currentStep).getVideoURL().equals(""))?stepsList.get
+            (currentStep).getVideoURL():stepsList.get(currentStep).getThumbnailURL();
+        Uri uri = Uri.parse(url);
         MediaSource mediaSource = buildMediaSource(uri);
         player.prepare(mediaSource, true, false);
     }
@@ -93,6 +105,8 @@ public class PreparationVideoFragment extends Fragment {
 
     public void releasePlayer() {
         if (player != null) {
+            player.stop();
+            player.clearVideoSurface();
             playbackPosition = player.getCurrentPosition();
             currentWindow = player.getCurrentWindowIndex();
             playWhenReady = player.getPlayWhenReady();
@@ -123,5 +137,44 @@ public class PreparationVideoFragment extends Fragment {
         releasePlayer();
     }
 
+    public void showVideoFullscreen(){
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) playerView.getLayoutParams();
+        params.width=params.MATCH_PARENT;
+        params.height=params.MATCH_PARENT;
+        playerView.setLayoutParams(params);
+    }
+
+    public void restVideoSize(){
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) playerView.getLayoutParams();
+        params.width=params.MATCH_PARENT;
+        params.height=(int) Utils.pxFromDp(CucoApp.getContext(), 250f);
+        playerView.setLayoutParams(params);
+    }
+
+    public void disableVideo(){
+        restVideoSize();
+        releasePlayer();
+    }
+
+    @Override public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        if(getActivity() != null && ((RecipeDetailActivity) getActivity())
+            .getSupportActionBar()!=null && player != null) {
+
+            // Checking the orientation of the screen
+            if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                Utils.hideStatusBar(getActivity());
+                ((RecipeDetailActivity) getActivity()).getSupportActionBar().hide();
+                showVideoFullscreen();
+
+            } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+                Utils.showStatusBar(getActivity());
+                ((RecipeDetailActivity) getActivity()).getSupportActionBar().show();
+                restVideoSize();
+
+            }
+        }
+    }
 
 }

@@ -1,6 +1,7 @@
 package com.app.cuco.recipedetail;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -13,6 +14,7 @@ import com.app.cuco.common.pojo.Recipe;
 import com.app.cuco.recipedetail.preparation.PreparationFragment;
 import com.app.cuco.recipedetail.preparation.PreparationVideoFragment;
 import com.app.cuco.util.Constants;
+import com.app.cuco.util.Utils;
 
 public class RecipeDetailActivity extends BaseActivity
     implements PreparationFragment.OnStepSelectedListener {
@@ -23,6 +25,7 @@ public class RecipeDetailActivity extends BaseActivity
     private Recipe mRecipe;
     private PreparationFragment preparationFragment;
     private PreparationVideoFragment videoFragment;
+    private int currentStep = 0;
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +56,16 @@ public class RecipeDetailActivity extends BaseActivity
         transaction.replace(R.id.recipe_detail_video, videoFragment);
         transaction.commit();
 
+        if(savedInstanceState != null && savedInstanceState.getInt(Constants
+            .RECIPE_VIDEO_IS_VISIBLE) == View.VISIBLE){
+            this.currentStep = savedInstanceState.getInt(Constants.RECIPE_VIDEO_STEP);
+            new Handler().postDelayed(new Runnable() {
+                @Override public void run() {
+                    onAStepSelected(currentStep);
+                }
+            },100);
+        }
+
     }
 
     @Override public void hasConnection() {
@@ -63,14 +76,23 @@ public class RecipeDetailActivity extends BaseActivity
 
     }
 
+    @Override protected void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putInt(Constants.RECIPE_VIDEO_IS_VISIBLE, frameLayout.getVisibility());
+        savedInstanceState.putInt(Constants.RECIPE_VIDEO_STEP, currentStep);
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
     @Override public void onAStepSelected(int step) {
+        currentStep = step;
         videoFragment.updateStep(step);
         frameLayout.setVisibility(View.VISIBLE);
     }
 
     @Override public void onBackPressed() {
         if (frameLayout.getVisibility() == View.VISIBLE && !isTabletSize()) {
-            videoFragment.releasePlayer();
+            Utils.showStatusBar(this);
+            getSupportActionBar().show();
+            videoFragment.disableVideo();
             frameLayout.setVisibility(View.GONE);
         } else {
             super.onBackPressed();
