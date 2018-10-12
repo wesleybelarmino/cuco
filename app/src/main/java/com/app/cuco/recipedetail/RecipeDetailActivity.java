@@ -64,6 +64,16 @@ public class RecipeDetailActivity extends BaseActivity
                     onAStepSelected(currentStep);
                 }
             },100);
+
+        }else {
+            if(isTabletSize()){
+                currentStep = 0;
+                new Handler().postDelayed(new Runnable() {
+                    @Override public void run() {
+                        onAStepSelected(currentStep);
+                    }
+                },100);
+            }
         }
 
     }

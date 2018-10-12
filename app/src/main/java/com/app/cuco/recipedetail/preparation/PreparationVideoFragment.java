@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.app.cuco.CucoApp;
@@ -39,6 +40,7 @@ import java.util.List;
 public class PreparationVideoFragment extends Fragment {
 
     @BindView(R.id.preparation_video_view) PlayerView playerView;
+    @BindView(R.id.preparation_video_step) TextView videoStep;
 
     private List<Steps> stepsList;
     private Integer currentStep;
@@ -95,6 +97,8 @@ public class PreparationVideoFragment extends Fragment {
         Uri uri = Uri.parse(url);
         MediaSource mediaSource = buildMediaSource(uri);
         player.prepare(mediaSource, true, false);
+
+        videoStep.setText(stepsList.get(currentStep).getDescription());
     }
 
     private MediaSource buildMediaSource(Uri uri) {
@@ -138,6 +142,7 @@ public class PreparationVideoFragment extends Fragment {
     }
 
     public void showVideoFullscreen(){
+        videoStep.setVisibility(View.GONE);
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) playerView.getLayoutParams();
         params.width=params.MATCH_PARENT;
         params.height=params.MATCH_PARENT;
@@ -145,6 +150,7 @@ public class PreparationVideoFragment extends Fragment {
     }
 
     public void restVideoSize(){
+        videoStep.setVisibility(View.VISIBLE);
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) playerView.getLayoutParams();
         params.width=params.MATCH_PARENT;
         params.height=(int) Utils.pxFromDp(CucoApp.getContext(), 250f);
@@ -160,7 +166,8 @@ public class PreparationVideoFragment extends Fragment {
         super.onConfigurationChanged(newConfig);
 
         if(getActivity() != null && ((RecipeDetailActivity) getActivity())
-            .getSupportActionBar()!=null && player != null) {
+            .getSupportActionBar()!=null && player != null && !((RecipeDetailActivity) getActivity
+            ()).isTabletSize()) {
 
             // Checking the orientation of the screen
             if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
