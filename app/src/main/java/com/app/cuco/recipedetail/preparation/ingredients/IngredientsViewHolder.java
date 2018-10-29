@@ -20,11 +20,6 @@ public class IngredientsViewHolder extends RecyclerView.ViewHolder {
 
     public void bind(Ingredients ingredients) {
         Log.d("IngredientsViewHolder","bind: "+ingredients.getIngredient());
-        StringBuilder stringBuilder = new StringBuilder(ingredients.getQuantity() + "");
-        stringBuilder.append(" ");
-        stringBuilder.append(ingredients.getMeasure());
-        stringBuilder.append(" ");
-        stringBuilder.append(ingredients.getIngredient());
-        ingredient.setText(stringBuilder.toString());
+        ingredient.setText(ingredients.toString());
     }
 }

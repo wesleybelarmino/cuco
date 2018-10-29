@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import com.app.cuco.CucoApp;
 import com.app.cuco.R;
 import com.app.cuco.common.pojo.Recipe;
 import com.app.cuco.recipedetail.preparation.ingredients.IngredientsAdapter;
@@ -45,6 +46,9 @@ public class PreparationFragment extends Fragment {
             }
         });
         stepsAdapter.notifyDataSetChanged();
+
+        Log.d("remoteView","saveIngredientsList");
+        CucoApp.saveIngredientsList(mRecipe.getIngredients());
     }
 
     @Override public void onAttach(Context context) {
@@ -97,5 +101,10 @@ public class PreparationFragment extends Fragment {
 
     public interface OnStepSelectedListener {
         void onAStepSelected(int step);
+    }
+
+    @Override public void onDestroyView() {
+        super.onDestroyView();
+        CucoApp.clearIngredientsList();
     }
 }
