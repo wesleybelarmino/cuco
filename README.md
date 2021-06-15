@@ -13,8 +13,8 @@ In this Project i have used many api which and I will describe each one briefly.
 **Palette**:  API for Android that allows you to extract and make use of colors in an image.  
 **Shimmer**: Android library that provides an easy way to add a shimmer effect to any view in your Android app.  
 
-
-
+<br/>
+<br/>
 
 ![Scrrenshot](Screenshot_20210614-195525_Cuco.jpg)
 ![Scrrenshot](Screenshot_20210614-195531_Cuco.jpg)
